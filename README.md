@@ -12,6 +12,8 @@
 
 ```shell script
 sudo apt update
+sudo apt install curl
+sudo su
 bash <(curl -L -s https://install.direct/go.sh)
 ```
 
@@ -19,6 +21,38 @@ bash <(curl -L -s https://install.direct/go.sh)
 
 ```shell script
 sudo vim /etc/v2ray/config.json
+{
+  "inbounds": [{
+    "port": 18993,
+    "protocol": "vmess",
+    "settings": {
+      "clients": [
+        {
+          "id": "9c04e2fb-107a-4bba-81be-9afeca38b20a",
+          "level": 1,
+          "alterId": 64
+        }
+      ]
+    }
+  }],
+  "outbounds": [{
+    "protocol": "freedom",
+    "settings": {}
+  },{
+    "protocol": "blackhole",
+    "settings": {},
+    "tag": "blocked"
+  }],
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "ip": ["geoip:private"],
+        "outboundTag": "blocked"
+      }
+    ]
+  }
+}
 ```
 
 - 运行 V2Ray
