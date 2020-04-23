@@ -22,13 +22,18 @@ bash <(curl -L -s https://install.direct/go.sh)
 ```shell script
 sudo vim /etc/v2ray/config.json
 {
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log"
+  },
   "inbounds": [{
-    "port": 18993,
+    "port": 31826,
     "protocol": "vmess",
     "settings": {
       "clients": [
         {
-          "id": "9c04e2fb-107a-4bba-81be-9afeca38b20a",
+          "id": "8ba2c468-f1a1-43cc-b754-871f999b83a8",
           "level": 1,
           "alterId": 64
         }
