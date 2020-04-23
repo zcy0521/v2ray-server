@@ -15,6 +15,15 @@
           "alterId": 64
         }
       ]
+    },
+    "streamSettings": {
+      "network": "kcp",
+      "security": "none",
+      "sockopt": {
+        "mark": 0,
+        "tcpFastOpen": false,
+        "tproxy": "off"
+      }
     }
   }],
   "outbounds": [{
@@ -33,5 +42,19 @@
         "outboundTag": "blocked"
       }
     ]
+  },
+  "transport": {
+    "kcpSettings": {
+      "mtu": 1350,
+      "tti": 20,
+      "uplinkCapacity": 5,
+      "downlinkCapacity": 20,
+      "congestion": false,
+      "readBufferSize": 1,
+      "writeBufferSize": 1,
+      "header": {
+        "type": "none"
+      }
+    }
   }
 }
