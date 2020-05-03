@@ -17,59 +17,9 @@ sudo su
 bash <(curl -L -s https://install.direct/go.sh)
 ```
 
-- 配置 V2Ray
+- 配置 V2Ray `/etc/v2ray/config.json`
 
-```shell script
-sudo vim /etc/v2ray/config.json
-{
-  "log": {
-    "loglevel": "warning",
-    "access": "/var/log/v2ray/access.log",
-    "error": "/var/log/v2ray/error.log"
-  },
-  "inbounds": [{
-    "port": 31826,
-    "protocol": "vmess",
-    "settings": {
-      "clients": [
-        {
-          "id": "8ba2c468-f1a1-43cc-b754-871f999b83a8",
-          "level": 1,
-          "alterId": 64
-        }
-      ]
-    }
-  }],
-  "outbounds": [{
-    "protocol": "freedom",
-    "settings": {}
-  },{
-    "protocol": "blackhole",
-    "settings": {},
-    "tag": "blocked"
-  }],
-  "routing": {
-    "rules": [
-      {
-        "type": "field",
-        "ip": ["geoip:private"],
-        "outboundTag": "blocked"
-      }
-    ]
-  }
-}
-```
-
-- 运行 V2Ray
-
-```shell script
-service v2ray start
-service v2ray stop
-service v2ray status
-service v2ray reload
-service v2ray restart
-service v2ray force-reload
-```
+- 运行 V2Ray `service v2ray start|stop|status|reload|restart|force-reload`
 
 ### Docker
 
@@ -89,16 +39,4 @@ sudo docker pull v2fly/v2fly-core
 git clone https://github.com/zcy0521/v2ray-server.git
 cd v2ray-server
 sudo docker-compose up -d
-```
-
-## 服务器优化
-
-### [bbr](https://github.com/google/bbr)
-
-```shell script
-sudo vi /etc/sysctl.conf
-net.ipv4.tcp_congestion_control=bbr
-net.core.default_qdisc=fq
-
-sudo sysctl --system
 ```

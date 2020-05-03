@@ -4,41 +4,39 @@
     "access": "/var/log/v2ray/access.log",
     "error": "/var/log/v2ray/error.log"
   },
-  "inbounds": [{
-    "port": 31826,
-    "protocol": "vmess",
-    "settings": {
-      "clients": [
-        {
-          "id": "8ba2c468-f1a1-43cc-b754-871f999b83a8",
-          "level": 1,
-          "alterId": 64
-        }
-      ]
-    },
-    "streamSettings": {
-      "network": "kcp",
-      "security": "none",
-      "sockopt": {
-        "mark": 0,
-        "tcpFastOpen": false,
-        "tproxy": "off"
+  "inbounds": [
+    {
+      "port": 10000,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "e1c6605b-64b1-46d3-9f11-5935d4f60894",
+            "level": 1,
+            "alterId": 64
+          }
+        ]
       }
     }
-  }],
-  "outbounds": [{
-    "protocol": "freedom",
-    "settings": {}
-  },{
-    "protocol": "blackhole",
-    "settings": {},
-    "tag": "blocked"
-  }],
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
+    }
+  ],
   "routing": {
     "rules": [
       {
         "type": "field",
-        "ip": ["geoip:private"],
+        "ip": [
+          "geoip:private"
+        ],
         "outboundTag": "blocked"
       }
     ]
