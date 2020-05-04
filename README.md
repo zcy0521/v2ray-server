@@ -19,7 +19,11 @@ bash <(curl -L -s https://install.direct/go.sh)
 
 - 配置 V2Ray `/etc/v2ray/config.json`
 
-- 运行 V2Ray `service v2ray start|stop|status|reload|restart|force-reload`
+- 运行 V2Ray `start|stop|status|reload|restart|force-reload`
+
+```shell script
+sudo systemctl start v2ray
+```
 
 ### Docker
 
