@@ -16,6 +16,9 @@
             "alterId": 64
           }
         ]
+      },
+      "streamSettings": {
+        "network": "kcp"
       }
     }
   ],
@@ -46,10 +49,10 @@
       "mtu": 1350,
       "tti": 20,
       "uplinkCapacity": 5,
-      "downlinkCapacity": 20,
-      "congestion": false,
-      "readBufferSize": 1,
-      "writeBufferSize": 1,
+      "downlinkCapacity": 100,
+      "congestion": true,
+      "readBufferSize": 2,
+      "writeBufferSize": 2,
       "header": {
         "type": "none"
       }
