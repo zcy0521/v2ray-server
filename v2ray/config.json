@@ -22,7 +22,8 @@
   ],
   "outbounds": [
     {
-      "protocol": "freedom"
+      "protocol": "freedom",
+      "settings": {}
     }
   ],
   "transport": {
