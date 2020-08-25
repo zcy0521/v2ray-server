@@ -6,14 +6,12 @@
   },
   "inbounds": [
     {
-      "port": 10000,
+      "port": 10086,
       "protocol": "vmess",
       "settings": {
         "clients": [
           {
-            "id": "e1c6605b-64b1-46d3-9f11-5935d4f60894",
-            "level": 1,
-            "alterId": 64
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811"
           }
         ]
       },
@@ -24,26 +22,9 @@
   ],
   "outbounds": [
     {
-      "protocol": "freedom",
-      "settings": {}
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
+      "protocol": "freedom"
     }
   ],
-  "routing": {
-    "rules": [
-      {
-        "type": "field",
-        "ip": [
-          "geoip:private"
-        ],
-        "outboundTag": "blocked"
-      }
-    ]
-  },
   "transport": {
     "kcpSettings": {
       "mtu": 1350,

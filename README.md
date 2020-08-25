@@ -4,17 +4,19 @@
 
 ### Linux
 
-[Github](https://github.com/v2ray/v2ray-core)
+[Github](https://github.com/v2fly/v2ray-core)
 
-[Linux 安装脚本](https://www.v2ray.com/chapter_00/install.html#linuxscript)
+[Linux 安装脚本](https://github.com/v2fly/fhs-install-v2ray)
 
 - 安装 V2Ray
 
 ```shell script
 sudo apt update
 sudo apt install curl
-sudo su
-bash <(curl -L -s https://install.direct/go.sh)
+sudo curl -O https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh
+sudo curl -O https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-dat-release.sh
+bash install-release.sh
+bash install-dat-release.sh
 ```
 
 - 配置 V2Ray `/etc/v2ray/config.json`
