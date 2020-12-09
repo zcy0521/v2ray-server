@@ -1,5 +1,14 @@
 # V2Ray Server
 
+## 修改SSH
+
+```shell script
+$ sudo nano /etc/ssh/sshd_config
+Port = 8022
+
+$ sudo systemctl restart ssh
+```
+
 ## 配置BBR
 
 https://github.com/google/bbr
@@ -15,7 +24,7 @@ $ sudo sysctl -p
 
 ## V2Ray
 
-### 安装`V2Ray`
+### 安装V2Ray
 
 https://github.com/v2fly/fhs-install-v2ray
 
@@ -38,7 +47,7 @@ installed: /etc/systemd/system/v2ray.service
 installed: /etc/systemd/system/v2ray@.service
 ```
 
-### 配置`V2Ray`(vmess+kcp+ws+shadowsocks)
+### 配置V2Ray(vmess+kcp+ws+shadowsocks)
 
 ```shell script
 sudo nano /usr/local/etc/v2ray/config.json
@@ -170,7 +179,7 @@ sudo nano /usr/local/etc/v2ray/config.json
 }
 ```
 
-### 运行`V2Ray`
+### 运行V2Ray
 
 ```shell script
 sudo systemctl enable v2ray
@@ -208,7 +217,7 @@ net.core.netdev_max_backlog = 2048
 $ sudo sysctl -p
 ```
 
-### 安装`kcptun`
+### 安装Kcptun
 
 https://github.com/xtaci/kcptun/releases/
 
@@ -221,7 +230,7 @@ sudo cp server_linux_amd64 /usr/bin/kcptun
 sudo chmod +x /usr/bin/kcptun
 ```
 
-### 配置`kcptun`
+### 配置Kcptun
 
 https://github.com/xtaci/kcptun/issues/251
 
@@ -288,7 +297,7 @@ sudo nano /etc/kcptun/config.ss.json
 }
 ```
 
-### 运行`kcptun`
+### 运行Kcptun
 
 - Kcptun to V2Ray
 
@@ -332,7 +341,7 @@ Type=simple
 Environment=GOGC=20
 ExecStart=/usr/bin/kcptun -c /etc/kcptun/config.ss.json
 Restart=on-failure
-ResartSec=10
+RestartSec=10
 KillMode=process
 LimitNOFILE=65536
 
@@ -352,7 +361,7 @@ sudo systemctl restart kcptun.v2ray kcptun.ss
 
 ## Nginx
 
-### 安装`Nginx`
+### 安装Nginx
 
 http://nginx.org/en/linux_packages.html#Debian
 
@@ -367,11 +376,12 @@ sudo apt update
 sudo apt install nginx
 ```
 
-### 配置`Nginx` ssl
+### 配置Nginx ssl
 
 - 上传证书
 
 ```shell scrpit
+unzip DOMAIN_NAME.zip
 scp -P 8022 DOMAIN_NAME.pem DOMAIN_NAME.key admin@SERVER_IP:/home/admin
 ```
 
@@ -385,7 +395,7 @@ cp DOMAIN_NAME.pem DOMAIN_NAME.key /etc/nginx/cert/
 - 配置https证书 **替换4处`DOMAIN_NAME`**
 
 ```shell scrpit
-sudo nano /etc/nginx/conf.d/<DOMAIN_NAME>.conf
+sudo nano /etc/nginx/conf.d/DOMAIN_NAME.conf
 ```
 
 ```
@@ -444,7 +454,7 @@ server {
 }
 ```
 
-### 运行`Nginx`
+### 运行Nginx
 
 ```shell script
 sudo systemctl enable nginx
