@@ -6,25 +6,26 @@ https://github.com/google/bbr
 
 ```shell script
 $ sudo nano /etc/sysctl.conf
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
+
+net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr
+
 $ sudo sysctl -p
 ```
 
 ## V2Ray
 
-### 安装
+### 安装`V2Ray`
 
 https://github.com/v2fly/fhs-install-v2ray
 
 ```shell script
-sudo -i
-apt update
-apt install curl
+$ sudo -i
+$ apt update
+$ apt install curl
 
-bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
-bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-dat-release.sh)
-
+$ bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
+$ bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-dat-release.sh)
 installed: /usr/local/bin/v2ray
 installed: /usr/local/bin/v2ctl
 installed: /usr/local/share/v2ray/geoip.dat
@@ -37,18 +38,18 @@ installed: /etc/systemd/system/v2ray.service
 installed: /etc/systemd/system/v2ray@.service
 ```
 
-### 配置 ws+kcp
+### 配置`V2Ray`(vmess+kcp+ws+shadowsocks)
 
 ```shell script
-$ sudo nano /usr/local/etc/v2ray/config.json
+sudo nano /usr/local/etc/v2ray/config.json
 ```
 
 ```json
 {
   "log": {
-    "loglevel": "warning",
     "access": "/var/log/v2ray/access.log",
-    "error": "/var/log/v2ray/error.log"
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
   },
   "routing": {
     "domainStrategy": "AsIs",
@@ -72,12 +73,6 @@ $ sudo nano /usr/local/etc/v2ray/config.json
             "id": "b831381d-6324-4d53-ad4f-8cda48b30811"
           }
         ]
-      },
-      "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-          "path": "/ray"
-        }
       },
       "sniffing": {
         "enabled": true,
@@ -111,6 +106,53 @@ $ sudo nano /usr/local/etc/v2ray/config.json
             "type": "none"
           }
         }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    },
+    {
+      "port": 10002,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/ray"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    },
+    {
+      "port": 20000,
+      "protocol": "shadowsocks",
+      "settings": {
+        "method": "chacha20-poly1305",
+        "password": "IamAGoodMan",
+        "network": "tcp,udp"
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
       }
     }
   ],
@@ -128,18 +170,189 @@ $ sudo nano /usr/local/etc/v2ray/config.json
 }
 ```
 
-### 运行
+### 运行`V2Ray`
 
 ```shell script
 sudo systemctl enable v2ray
 sudo systemctl start v2ray
-sudo systemctl restart v2ray
 sudo systemctl status v2ray
+
+sudo systemctl restart v2ray
+```
+
+## Kcptun
+
+### 参数优化
+
+https://github.com/xtaci/kcptun
+
+- 执行 ulimit -n 65535
+
+```shell script
+$ sudo nano ~/.bashrc
+
+ulimit -n 65535
+```
+
+- 编辑 /etc/sysctl.conf
+
+```shell script
+$ sudo nano /etc/sysctl.conf
+
+net.core.rmem_max = 26214400
+net.core.rmem_default = 26214400
+net.core.wmem_max = 26214400
+net.core.wmem_default = 26214400
+net.core.netdev_max_backlog = 2048
+
+$ sudo sysctl -p
+```
+
+### 安装`kcptun`
+
+https://github.com/xtaci/kcptun/releases/
+
+```shell script
+wget https://github.com/xtaci/kcptun/releases/download/v20201010/kcptun-linux-amd64-20201010.tar.gz
+
+tar -xzf kcptun-linux-amd64-20201010.tar.gz
+
+sudo cp server_linux_amd64 /usr/bin/kcptun
+sudo chmod +x /usr/bin/kcptun
+```
+
+### 配置`kcptun`
+
+https://github.com/xtaci/kcptun/issues/251
+
+- Kcptun to V2Ray
+
+```shell script
+sudo mkdir /etc/kcptun
+sudo nano /etc/kcptun/config.v2ray.json
+```
+
+```json
+{
+  "listen": ":4000",
+  "target": "127.0.0.1:10000",
+  "key": "KcptunPassword",
+  "crypt": "aes-128",
+  "mode": "fast3",
+  "mtu": 1400,
+  "sndwnd": 5120,
+  "rcvwnd": 5120,
+  "datashard": 30,
+  "parityshard": 15,
+  "dscp": 46,
+  "nocomp": true,
+  "acknodelay": false,
+  "nodelay": 0,
+  "interval": 20,
+  "resend": 2,
+  "nc": 1,
+  "sockbuf": 4194304,
+  "keepalive": 10,
+  "log": "/var/log/kcptun.v2ray.log"
+}
+```
+
+- Kcptun to Shadowsocks
+
+```shell script
+sudo nano /etc/kcptun/config.ss.json
+```
+
+```json
+{
+  "listen": ":4001",
+  "target": "127.0.0.1:20000",
+  "key": "KcptunPassword",
+  "crypt": "aes-128",
+  "mode": "fast3",
+  "mtu": 1400,
+  "sndwnd": 5120,
+  "rcvwnd": 5120,
+  "datashard": 30,
+  "parityshard": 15,
+  "dscp": 46,
+  "nocomp": true,
+  "acknodelay": false,
+  "nodelay": 0,
+  "interval": 20,
+  "resend": 2,
+  "nc": 1,
+  "sockbuf": 4194304,
+  "keepalive": 10,
+  "log": "/var/log/kcptun.ss.log"
+}
+```
+
+### 运行`kcptun`
+
+- Kcptun to V2Ray
+
+```shell script
+sudo nano /usr/lib/systemd/system/kcptun.v2ray.service
+```
+
+```
+Description=kcptun.v2ray
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+Environment=GOGC=20
+ExecStart=/usr/bin/kcptun -c /etc/kcptun/config.v2ray.json
+Restart=on-failure
+RestartSec=10
+KillMode=process
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- Kcptun to Shadowsocks
+
+```shell script
+sudo nano /usr/lib/systemd/system/kcptun.ss.service
+```
+
+```
+Description=kcptun.ss
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+Environment=GOGC=20
+ExecStart=/usr/bin/kcptun -c /etc/kcptun/config.ss.json
+Restart=on-failure
+ResartSec=10
+KillMode=process
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- 运行
+
+```shell script
+sudo systemctl enable kcptun.v2ray kcptun.ss
+sudo systemctl start kcptun.v2ray kcptun.ss
+sudo systemctl status kcptun.v2ray kcptun.ss
+
+sudo systemctl restart kcptun.v2ray kcptun.ss
 ```
 
 ## Nginx
 
-### 安装
+### 安装`Nginx`
 
 http://nginx.org/en/linux_packages.html#Debian
 
@@ -147,41 +360,38 @@ http://nginx.org/en/linux_packages.html#Debian
 sudo apt install curl gnupg2 ca-certificates lsb-release
 
 echo "deb http://nginx.org/packages/debian `lsb_release -cs` nginx" sudo tee /etc/apt/sources.list.d/nginx.list
-    
 curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
 sudo apt-key fingerprint ABF5BD827BD9BF62
+
 sudo apt update
 sudo apt install nginx
 ```
 
-### 配置 ssl
+### 配置`Nginx` ssl
 
 - 上传证书
 
 ```shell scrpit
-$ unzip <DOMAIN_NAME>.zip
-$ scp -P 8022 <DOMAIN_NAME>.pem <DOMAIN_NAME>.key admin@<SERVER_IP>:/home/admin
+scp -P 8022 DOMAIN_NAME.pem DOMAIN_NAME.key admin@SERVER_IP:/home/admin
 ```
 
 - 服务器创建证书目录
 
 ```shell scrpit
-$ sudo mkdir /etc/nginx/cert
-$ cp /home/admin/<DOMAIN_NAME>.pem /etc/nginx/cert/<DOMAIN_NAME>.pem
-$ cp /home/admin/<DOMAIN_NAME>.key /etc/nginx/cert/<DOMAIN_NAME>.key
+sudo mkdir /etc/nginx/cert
+cp DOMAIN_NAME.pem DOMAIN_NAME.key /etc/nginx/cert/
 ```
 
-- 配置https证书 **替换4处`<DOMAIN_NAME>`**
+- 配置https证书 **替换4处`DOMAIN_NAME`**
 
 ```shell scrpit
-$ sudo touch /etc/nginx/conf.d/<DOMAIN_NAME>.conf
-$ sudo nano /etc/nginx/conf.d/<DOMAIN_NAME>.conf
+sudo nano /etc/nginx/conf.d/<DOMAIN_NAME>.conf
 ```
 
 ```
 server {
     listen       80;
-    server_name  <DOMAIN_NAME>;
+    server_name  [DOMAIN_NAME];
     rewrite ^(.*)$ https://$host$1 permanent;
 
     location / {
@@ -198,10 +408,10 @@ server {
 # HTTPS server
 server {
     listen 443 ssl;
-    server_name <DOMAIN_NAME>;
+    server_name [DOMAIN_NAME];
 
-    ssl_certificate /etc/nginx/cert/<DOMAIN_NAME>.pem;
-    ssl_certificate_key /etc/nginx/cert/<DOMAIN_NAME>.key;
+    ssl_certificate /etc/nginx/cert/[DOMAIN_NAME].pem;
+    ssl_certificate_key /etc/nginx/cert/[DOMAIN_NAME].key;
     ssl_session_timeout 5m;
     ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
@@ -217,7 +427,7 @@ server {
             return 404;
         }
         proxy_redirect off;
-        proxy_pass http://127.0.0.1:10000/ray;
+        proxy_pass http://127.0.0.1:10002/ray;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -234,11 +444,12 @@ server {
 }
 ```
 
-### 运行
+### 运行`Nginx`
 
 ```shell script
 sudo systemctl enable nginx
 sudo systemctl start nginx
 sudo systemctl status nginx
+
 sudo systemctl restart nginx
 ```

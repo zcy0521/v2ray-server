@@ -1,0 +1,22 @@
+{
+  "listen": ":4001",
+  "target": "127.0.0.1:20000",
+  "key": "KcptunPassword",
+  "crypt": "aes-128",
+  "mode": "fast3",
+  "mtu": 1400,
+  "sndwnd": 5120,
+  "rcvwnd": 5120,
+  "datashard": 30,
+  "parityshard": 15,
+  "dscp": 46,
+  "nocomp": true,
+  "acknodelay": false,
+  "nodelay": 0,
+  "interval": 20,
+  "resend": 2,
+  "nc": 1,
+  "sockbuf": 4194304,
+  "keepalive": 10,
+  "log": "/var/log/kcptun.log"
+}
