@@ -217,7 +217,7 @@ net.core.netdev_max_backlog = 2048
 $ sudo sysctl -p
 ```
 
-### 安装Kcptun
+### 下载Kcptun
 
 https://github.com/xtaci/kcptun/releases/
 
@@ -225,9 +225,6 @@ https://github.com/xtaci/kcptun/releases/
 wget https://github.com/xtaci/kcptun/releases/download/v20201010/kcptun-linux-amd64-20201010.tar.gz
 
 tar -xzf kcptun-linux-amd64-20201010.tar.gz
-
-sudo cp server_linux_amd64 /usr/bin/kcptun
-sudo chmod +x /usr/bin/kcptun
 ```
 
 ### 配置Kcptun
@@ -352,6 +349,10 @@ WantedBy=multi-user.target
 - 运行
 
 ```shell script
+sudo cp server_linux_amd64 /usr/bin/kcptun
+
+sudo chmod +x /usr/bin/kcptun /usr/lib/systemd/system/kcptun.v2ray.service /usr/lib/systemd/system/kcptun.ss.service
+
 sudo systemctl enable kcptun.v2ray kcptun.ss
 sudo systemctl start kcptun.v2ray kcptun.ss
 sudo systemctl status kcptun.v2ray kcptun.ss
