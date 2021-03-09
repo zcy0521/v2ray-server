@@ -4,18 +4,6 @@
     "error": "/var/log/v2ray/error.log",
     "loglevel": "warning"
   },
-  "routing": {
-    "domainStrategy": "AsIs",
-    "rules": [
-      {
-        "type": "field",
-        "protocol": [
-          "bittorrent"
-        ],
-        "outboundTag": "blocked"
-      }
-    ]
-  },
   "inbounds": [
     {
       "port": 10000,
@@ -46,59 +34,10 @@
         ]
       },
       "streamSettings": {
-        "network": "kcp",
-        "kcpSettings": {
-          "mtu": 1350,
-          "tti": 10,
-          "uplinkCapacity": 200,
-          "downlinkCapacity": 200,
-          "congestion": false,
-          "readBufferSize": 2,
-          "writeBufferSize": 2,
-          "header": {
-            "type": "none"
-          }
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
-      }
-    },
-    {
-      "port": 10002,
-      "protocol": "vmess",
-      "settings": {
-        "clients": [
-          {
-            "id": "b831381d-6324-4d53-ad4f-8cda48b30811"
-          }
-        ]
-      },
-      "streamSettings": {
         "network": "ws",
         "wsSettings": {
           "path": "/ray"
         }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
-      }
-    },
-    {
-      "port": 20000,
-      "protocol": "shadowsocks",
-      "settings": {
-        "method": "chacha20-poly1305",
-        "password": "IamAGoodMan",
-        "network": "tcp,udp"
       },
       "sniffing": {
         "enabled": true,
@@ -113,11 +52,6 @@
     {
       "protocol": "freedom",
       "settings": {}
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
     }
   ]
 }
